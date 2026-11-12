@@ -1,0 +1,5 @@
+/private/
+token*.dat
+logs/
+*.log
+__pycache__/
