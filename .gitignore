@@ -3,3 +3,4 @@ token*.dat
 logs/
 *.log
 __pycache__/
+*.bat

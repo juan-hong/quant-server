@@ -1,9 +1,13 @@
+import os
 import time
 from pathlib import Path
 
 import requests
 
 from private.auth import IS_SIMULATION, REAL, SIM
+
+if os.environ.get("KIS_MODE") in ("real", "sim"):
+    IS_SIMULATION = os.environ["KIS_MODE"] == "sim"
 
 CONF = SIM if IS_SIMULATION else REAL
 URL_BASE = CONF["URL_BASE"]
@@ -58,8 +62,7 @@ def request(method, path, tr_id, params=None, body=None):
                 method, URL_BASE + path, headers=headers, params=params, json=body, timeout=TIMEOUT
             )
             data = res.json()
-        except (requests.RequestException, ValueError, KeyError) as e:
-            print(f"[API_ERROR] {path} {e}")
+        except (requests.RequestException, ValueError, KeyError):
             return None
 
         code = data.get("msg_cd")
@@ -69,10 +72,6 @@ def request(method, path, tr_id, params=None, body=None):
         if code == "EGW00201":
             time.sleep(1)
             continue
-        if data.get("rt_cd") == "0":
-            return data
-        print(f"[API_ERROR] {path} {code} {data.get('msg1') or res.status_code}")
-        return None
+        return data if data.get("rt_cd") == "0" else None
 
-    print(f"[API_ERROR] {path} 재시도 초과")
     return None

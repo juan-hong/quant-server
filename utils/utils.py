@@ -24,7 +24,6 @@ def wait_for_open():
         return False
     if now.time() < MARKET_OPEN:
         target = now.replace(hour=MARKET_OPEN.hour, minute=MARKET_OPEN.minute, second=0, microsecond=0)
-        print(f"[WAIT] 장 시작까지 {int((target - now).total_seconds())}초 대기")
         time.sleep((target - now).total_seconds())
     return True
 

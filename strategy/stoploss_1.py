@@ -8,9 +8,7 @@ INTERVAL = 15
 
 
 def run_stoploss():
-    print("[STOPLOSS_1] 손절(-2%) 감시 시작")
     if not wait_for_open():
-        print("[STOPLOSS_1] 장 시간이 아니라 종료")
         return
 
     while is_market_open():
@@ -20,7 +18,6 @@ def run_stoploss():
             if rate > STOPLOSS_RATE or item["sellable"] < 1:
                 continue
 
-            print(f"[STOPLOSS] {item['name']}({item['code']}) {rate:.2f}% {item['sellable']}주 매도")
             if sell_order(item["code"], item["sellable"]):
                 save_log(
                     f"[STOPLOSS] 종목:{item['name']} | 코드:{item['code']} | "
@@ -28,8 +25,6 @@ def run_stoploss():
                 )
             time.sleep(0.5)
         time.sleep(INTERVAL)
-
-    print("[STOPLOSS_1] 장 종료로 감시 종료")
 
 
 if __name__ == "__main__":
